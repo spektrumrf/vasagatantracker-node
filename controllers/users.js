@@ -38,7 +38,7 @@ usersRouter.post('/', async (request, response) => {
     try {
         const body = request.body;
 
-        const authorizedUser = await isAuthorized(request, response);
+        const authorizedUser = await isAuthorized(request, response, true);
 
         if (!authorizedUser) {
             return;
@@ -78,7 +78,7 @@ usersRouter.post('/', async (request, response) => {
 
 usersRouter.delete('/:id', async (request, response) => {
     try {
-        const authorizedUser = await isAuthorized(request, response);
+        const authorizedUser = await isAuthorized(request, response, true);
 
         if (!authorizedUser) {
             return;
@@ -113,7 +113,7 @@ usersRouter.delete('/:id', async (request, response) => {
 usersRouter.put('/:id', async (request, response) => {
     const body = request.body;
     try {
-        const authorizedUser = await isAuthorized(request, response);
+        const authorizedUser = await isAuthorized(request, response, true);
 
         if (!authorizedUser) {
             return response.status(400).json({error: 'Det går inte att editera användare från tidigare år!'});
