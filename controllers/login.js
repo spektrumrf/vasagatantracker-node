@@ -24,7 +24,15 @@ loginRouter.post('/', async (request, response) => {
 
     const token = jwt.sign(userForToken, process.env.SECRET);
 
-    response.status(200).send({ id: user.id, token, username: user.username, name: user.name, type: user.type });
+    firestore.getAuth().createCustomToken(user.id)
+        .then(function(customToken) {
+            return response.status(200).send({ id: user.id, token, firestoreToken: customToken, username: user.username, name: user.name, type: user.type });
+
+        })
+        .catch(function(error) {
+            return response.status(500).send({ error: 'Kunde inte skapa token, sorry!' });
+
+        });
 });
 
 module.exports = loginRouter;
