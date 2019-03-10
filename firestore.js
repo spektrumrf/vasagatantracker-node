@@ -1,6 +1,6 @@
 require('firebase/firestore');
 require('firebase/auth');
-require('firebase/storage');
+const storage = require('firebase/storage');
 require('dotenv').config();
 
 const admin = require('firebase-admin');
@@ -36,7 +36,7 @@ const getStore = () => {
 };
 
 const getStorage = () => {
-    return admin.storage().bucket();
+    return storage;
 };
 
 module.exports = { getDatabase, getCollection, getAuth, getStore, getStorage, getProperties };
