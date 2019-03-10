@@ -83,7 +83,7 @@ featsRouter.post('/', async (request, response) => {
         }
 
         const feat = {
-            id: uuid(),
+            id: body.id,
             approved: false,
             value: body.value,
             location: body.location,
