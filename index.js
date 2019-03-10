@@ -8,7 +8,6 @@ const featRouter = require('./controllers/feats');
 const userRouter = require('./controllers/users');
 const loginRouter = require('./controllers/login');
 const locationRouter = require('./controllers/locations');
-const proofRouter = require('./controllers/proofs');
 const propertiesRouter = require('./controllers/properties');
 const config = require('./utils/config');
 
@@ -21,7 +20,6 @@ app.use('/api/login', loginRouter);
 app.use('/api/users', userRouter);
 app.use('/api/feats', featRouter);
 app.use('/api/locations', locationRouter);
-app.use('/api/proofs', proofRouter);
 app.use('/api/properties', propertiesRouter);
 
 app.use(middleware.error);

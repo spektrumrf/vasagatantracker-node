@@ -1,6 +1,5 @@
 require('firebase/firestore');
 require('firebase/auth');
-const storage = require('firebase/storage');
 require('dotenv').config();
 
 const admin = require('firebase-admin');
@@ -11,7 +10,6 @@ admin.initializeApp({
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
         privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
     }),
-    storageBucket: 'vasagatantracker-spektrumrf.appspot.com',
     databaseURL: 'https://vasagatantracker-spektrumrf.firebaseio.com'
 });
 
@@ -35,8 +33,4 @@ const getStore = () => {
     return admin.firestore();
 };
 
-const getStorage = () => {
-    return storage;
-};
-
-module.exports = { getDatabase, getCollection, getAuth, getStore, getStorage, getProperties };
+module.exports = { getDatabase, getCollection, getAuth, getStore, getProperties };

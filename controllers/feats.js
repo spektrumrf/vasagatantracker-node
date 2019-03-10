@@ -53,7 +53,6 @@ featsRouter.delete('/:id', async (request, response) => {
 
         await firestore.getStore().runTransaction(async t => {
             t.delete(firestore.getCollection(year, 'feats').doc(request.params.id));
-            t.delete(firestore.getCollection(year, 'proofs').doc(request.params.id));
         });
 
         response.status(204).json(feat);
@@ -92,17 +91,10 @@ featsRouter.post('/', async (request, response) => {
             user: authorizedUser.id,
             content: body.content ? body.content : {},
             comment: body.comment ? body.comment : '',
-            adminComment: ''
+            adminComment: '',
+            proofs: body.proofs
         };
 
-        let proofIds = [];
-        await Promise.all(body.proofs.map(async proof => {
-            const proofStorageId = uuid();
-            const proofRef = firestore.getStorage().ref().child(`years/${request.query.year}/feats/${feat.id}/proofs/${proofStorageId}.jpg`);
-            proofIds.push(proofStorageId);
-            return proofRef.put(proof);
-        }));
-        feat.proofs = proofIds;
         await firestore.getStore().runTransaction(async t => {
             t.set(firestore.getCollection(request.query.year, 'feats').doc(feat.id), feat);
         });
