@@ -24,7 +24,8 @@
     "jsonwebtoken": "^8.3.0",
     "moment": "^2.22.2",
     "npm": "^6.4.1",
-    "react-resizable": "^1.7.5"
+    "react-resizable": "^1.7.5",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.6",

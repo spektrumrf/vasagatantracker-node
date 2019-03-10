@@ -1,8 +1,8 @@
 const firestore = require('../firestore');
 const featsRouter = require('express').Router();
-const crypto = require('crypto');
 const isAuthorized = require('../utils/auth');
 const moment = require('moment');
+const uuid = require('uuid/v4');
 
 featsRouter.get('/', async (request, response) => {
     const featsSnap = await firestore.getCollection(request.query.year, 'feats').get();
@@ -84,7 +84,7 @@ featsRouter.post('/', async (request, response) => {
         }
 
         const feat = {
-            id: crypto.randomBytes(16).toString('hex'),
+            id: uuid(),
             approved: false,
             value: body.value,
             location: body.location,
@@ -95,9 +95,16 @@ featsRouter.post('/', async (request, response) => {
             adminComment: ''
         };
 
+        let proofIds = [];
+        await Promise.all(body.proofs.map(async proof => {
+            const proofStorageId = uuid();
+            const proofRef = firestore.getStorage().ref().child(`years/${request.query.year}/feats/${feat.id}/proofs/${proofStorageId}.jpg`);
+            proofIds.push(proofStorageId);
+            return proofRef.put(proof);
+        }));
+        feat.proofs = proofIds;
         await firestore.getStore().runTransaction(async t => {
             t.set(firestore.getCollection(request.query.year, 'feats').doc(feat.id), feat);
-            t.set(firestore.getCollection(request.query.year, 'proofs').doc(feat.id), { proofs: body.proofs });
         });
 
         response.json(feat);

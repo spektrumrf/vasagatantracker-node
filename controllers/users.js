@@ -1,7 +1,7 @@
 const firestore = require('../firestore');
 const bcrypt = require('bcrypt');
 const usersRouter = require('express').Router();
-const crypto = require('crypto');
+const uuid = require('uuid/v4');
 const isAuthorized = require('../utils/auth');
 
 usersRouter.get('/', async (request, response) => {
@@ -60,7 +60,7 @@ usersRouter.post('/', async (request, response) => {
         const passwordHash = await bcrypt.hash(body.password, saltRounds);
 
         const user = {
-            id: crypto.randomBytes(16).toString('hex'),
+            id: uuid(),
             name: body.name,
             username: body.username,
             type: body.type,
