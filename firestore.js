@@ -36,7 +36,7 @@ const getStore = () => {
 };
 
 const getStorage = () => {
-    return admin.storage();
+    return admin.storage().bucket();
 };
 
 module.exports = { getDatabase, getCollection, getAuth, getStore, getStorage, getProperties };
