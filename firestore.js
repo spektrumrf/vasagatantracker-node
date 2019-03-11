@@ -10,6 +10,7 @@ admin.initializeApp({
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
         privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
     }),
+    storageBucket: 'vasagatantracker-spektrumrf.appspot.com',
     databaseURL: 'https://vasagatantracker-spektrumrf.firebaseio.com'
 });
 
@@ -33,4 +34,8 @@ const getStore = () => {
     return admin.firestore();
 };
 
-module.exports = { getDatabase, getCollection, getAuth, getStore, getProperties };
+const getBucket = () => {
+    return admin.storage().bucket();
+};
+
+module.exports = { getDatabase, getCollection, getAuth, getStore, getBucket, getProperties };

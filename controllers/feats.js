@@ -55,6 +55,10 @@ featsRouter.delete('/:id', async (request, response) => {
             t.delete(firestore.getCollection(year, 'feats').doc(request.params.id));
         });
 
+        await Promise.all(feat.proofs.map(proof => {
+            return firestore.getBucket().file(proof).delete();
+        }));
+
         response.status(204).json(feat);
     } catch (exception) {
         console.log(exception);
@@ -82,8 +86,15 @@ featsRouter.post('/', async (request, response) => {
             return response.status(400).json({ error: 'Det går inte att skapa nya prestationer för tidigare år!' });
         }
 
+        let proofs = [];
+        await Promise.all(body.proofs.map(proof => {
+            const proofId = uuid();
+            proofs.push(proofId);
+            return firestore.getBucket().upload(proof, { destination: proofId });
+        }));
+
         const feat = {
-            id: body.id,
+            id: uuid(),
             approved: false,
             value: body.value,
             location: body.location,
@@ -92,7 +103,7 @@ featsRouter.post('/', async (request, response) => {
             content: body.content ? body.content : {},
             comment: body.comment ? body.comment : '',
             adminComment: '',
-            proofs: body.proofs
+            proofs
         };
 
         await firestore.getStore().runTransaction(async t => {
