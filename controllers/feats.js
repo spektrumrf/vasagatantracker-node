@@ -90,7 +90,8 @@ featsRouter.post('/', async (request, response) => {
         await Promise.all(body.proofs.map(proof => {
             const proofId = uuid();
             proofs.push(proofId);
-            return firestore.getBucket().upload(proof, { destination: proofId });
+            const url = URL.createObjectURL(proof);
+            return firestore.getBucket().upload(url, { destination: proofId });
         }));
 
         const feat = {
