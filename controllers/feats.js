@@ -90,16 +90,12 @@ featsRouter.post('/', async (request, response) => {
         await Promise.all(body.proofs.map(proof => {
             const proofId = uuid();
             proofs.push(proofId);
-            return fs.writeFile(`../${proofId}`, proof, (err) => {
-                console.log(err);
-                return firestore.getBucket().upload(`../${proofId}`, { destination: proofId });
-            });
+            fs.writeFileSync(`../${proofId}`, proof);
+            return firestore.getBucket().upload(`../${proofId}`);
         }));
-        await Promise.all(proofs.map(proof => {
-            return fs.unlink(`../${proof}`, (err) => {
-                console.log(err);
-            });
-        }));
+        proofs.forEach(proofId => {
+            fs.unlinkSync(`../${proofId}`);
+        });
 
         const feat = {
             id: uuid(),
