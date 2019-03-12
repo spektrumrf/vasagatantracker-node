@@ -96,7 +96,9 @@ featsRouter.post('/', async (request, response) => {
             });
         }));
         await Promise.all(proofs.map(proof => {
-            return fs.unlink(`../${proof}`);
+            return fs.unlink(`../${proof}`, (err) => {
+                console.log(err);
+            });
         }));
 
         const feat = {
