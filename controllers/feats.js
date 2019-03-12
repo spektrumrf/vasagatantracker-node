@@ -91,7 +91,9 @@ featsRouter.post('/', async (request, response) => {
             const proofId = uuid();
             proofs.push(proofId);
             const file = firestore.getBucket().file(proofId);
-            return file.save(proof);
+            const proofString = fs.readFileSync(proof);
+            console.log(proofString);
+            return file.save(proofString);
         }));
 
         const feat = {
