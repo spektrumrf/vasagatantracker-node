@@ -3,7 +3,7 @@ const featsRouter = require('express').Router();
 const isAuthorized = require('../utils/auth');
 const moment = require('moment');
 const uuid = require('uuid/v4');
-
+const fs = require('fs');
 featsRouter.get('/', async (request, response) => {
     const featsSnap = await firestore.getCollection(request.query.year, 'feats').get();
     const feats = featsSnap.docs.map(doc => doc.data());
@@ -90,8 +90,13 @@ featsRouter.post('/', async (request, response) => {
         await Promise.all(body.proofs.map(proof => {
             const proofId = uuid();
             proofs.push(proofId);
-            const url = URL.createObjectURL(proof);
-            return firestore.getBucket().upload(url, { destination: proofId });
+            return fs.writeFile(`images/${proofId}`, proof, (err) => {
+                console.log(err);
+                return firestore.getBucket().upload(`images/${proofId}`, { destination: proofId });
+            });
+        }));
+        await Promise.all(proofs.map(proof => {
+            return fs.unlink(`images/${proof}`);
         }));
 
         const feat = {
