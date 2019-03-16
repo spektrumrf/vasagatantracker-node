@@ -30,9 +30,9 @@ propertiesRouter.put('/', async (request, response) => {
         };
     }
 
-    await firestore.getDatabase(request.query.year).update(newProperties);
+    const properties = await firestore.getDatabase(request.query.year).update(newProperties);
 
-    response.status(200);
+    response.status(200).json(properties);
 });
 
 module.exports = propertiesRouter;
