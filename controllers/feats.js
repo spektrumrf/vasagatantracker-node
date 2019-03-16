@@ -3,7 +3,8 @@ const featsRouter = require('express').Router();
 const isAuthorized = require('../utils/auth');
 const moment = require('moment');
 const uuid = require('uuid/v4');
-const fs = require('fs');
+const fsPromises = require('fs').promises;
+
 featsRouter.get('/', async (request, response) => {
     const featsSnap = await firestore.getCollection(request.query.year, 'feats').get();
     const feats = featsSnap.docs.map(doc => doc.data());
@@ -89,11 +90,19 @@ featsRouter.post('/', async (request, response) => {
         let proofs = [];
         await Promise.all(body.proofs.map(proof => {
             const proofId = uuid();
-            proofs.push(proofId);
-            const file = firestore.getBucket().file(proofId);
-            const proofString = fs.readFileSync(proof);
-            console.log(proofString);
-            return file.save(proofString);
+            const type = proof.split(';')[0].split('image/')[1];
+            const filePath = `images/${proofId}.${type}`;
+            proofs.push(filePath);
+            const proofData = proof.split(';base64,').pop();
+            return fsPromises.writeFile(filePath, proofData, 'base64');
+        }));
+
+        await Promise.all(proofs.map(proofPath => {
+            return firestore.getBucket().upload(proofPath, { destination: proofPath });
+        }));
+
+        await Promise.all(proofs.map(proofPath => {
+            return fsPromises.unlink(proofPath);
         }));
 
         const feat = {

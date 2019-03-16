@@ -14,6 +14,8 @@ admin.initializeApp({
     databaseURL: 'https://vasagatantracker-spektrumrf.firebaseio.com'
 });
 
+admin.firestore().settings({ timestampsInSnapshots: true });
+
 const getAuth = () => {
     return admin.auth();
 };
