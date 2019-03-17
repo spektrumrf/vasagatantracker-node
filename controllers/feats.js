@@ -88,22 +88,21 @@ featsRouter.post('/', async (request, response) => {
         }
 
         let proofs = [];
-        const productionDir = process.env.NODE_ENV === 'production' ? '/app/' : '';
         await Promise.all(body.proofs.map(proof => {
             const proofId = uuid();
             const type = proof.split(';')[0].split('image/')[1];
             const filename = `${proofId}.${type}`;
             proofs.push(filename);
             const proofData = proof.split(';base64,').pop();
-            return fsPromises.writeFile(`${productionDir}tmp/${filename}`, proofData, 'base64');
+            return fsPromises.writeFile(`tmp/${filename}`, proofData, 'base64');
         }));
 
         await Promise.all(proofs.map(proofFilename => {
-            return firestore.getBucket().upload(`${productionDir}tmp/${proofFilename}`, { destination: `proofs/${proofFilename}` });
+            return firestore.getBucket().upload(`tmp/${proofFilename}`, { destination: `proofs/${proofFilename}` });
         }));
 
         await Promise.all(proofs.map(proofFilename => {
-            return fsPromises.unlink(`${productionDir}tmp/${proofFilename}`);
+            return fsPromises.unlink(`tmp/${proofFilename}`);
         }));
 
         const feat = {
