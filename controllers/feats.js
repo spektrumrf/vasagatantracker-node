@@ -91,18 +91,18 @@ featsRouter.post('/', async (request, response) => {
         await Promise.all(body.proofs.map(proof => {
             const proofId = uuid();
             const type = proof.split(';')[0].split('image/')[1];
-            const filePath = `images/${proofId}.${type}`;
-            proofs.push(filePath);
+            const filename = `${proofId}.${type}`;
+            proofs.push(filename);
             const proofData = proof.split(';base64,').pop();
-            return fsPromises.writeFile(filePath, proofData, 'base64');
+            return fsPromises.writeFile(`tmp/${filename}`, proofData, 'base64');
         }));
 
-        await Promise.all(proofs.map(proofPath => {
-            return firestore.getBucket().upload(proofPath, { destination: proofPath });
+        await Promise.all(proofs.map(proofFilename => {
+            return firestore.getBucket().upload(`tmp/${proofFilename}`, { destination: `proofs/${proofFilename}` });
         }));
 
-        await Promise.all(proofs.map(proofPath => {
-            return fsPromises.unlink(proofPath);
+        await Promise.all(proofs.map(proofFilename => {
+            return fsPromises.unlink(`tmp/${proofFilename}`);
         }));
 
         const feat = {
