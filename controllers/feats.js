@@ -57,7 +57,7 @@ featsRouter.delete('/:id', async (request, response) => {
         });
 
         await Promise.all(feat.proofs.map(proof => {
-            return firestore.getBucket().file(proof).delete();
+            return firestore.getBucket().file(`proofs/${proof}`).delete();
         }));
 
         response.status(204).json(feat);

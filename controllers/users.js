@@ -97,7 +97,6 @@ usersRouter.delete('/:id', async (request, response) => {
             const featsSnap = await t.get(firestore.getCollection(request.query.year, 'feats').where('user', '==', request.params.id));
             for (const feat of featsSnap.docs.map(doc => doc.data())) {
                 t.delete(firestore.getCollection(request.query.year, 'feats').doc(feat.id));
-                t.delete(firestore.getCollection(request.query.year, 'proofs').doc(feat.id));
             }
             t.delete(firestore.getCollection(request.query.year, 'users').doc(request.params.id));
             return removedUser;
