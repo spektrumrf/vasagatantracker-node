@@ -30,6 +30,13 @@ propertiesRouter.put('/', async (request, response) => {
         };
     }
 
+    if(body.endDate){
+        newProperties = {
+            ...newProperties,
+            endDate: body.endDate
+        };
+    }
+
     const properties = await firestore.getDatabase(request.query.year).update(newProperties);
 
     response.status(200).json(properties);
