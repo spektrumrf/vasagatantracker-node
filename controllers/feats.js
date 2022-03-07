@@ -2,7 +2,7 @@ const firestore = require('../firestore');
 const featsRouter = require('express').Router();
 const isAuthorized = require('../utils/auth');
 const moment = require('moment');
-const uuid = require('uuid/v4');
+const { v4: uuidv4 } = require('uuid');
 const fsPromises = require('fs').promises;
 
 featsRouter.get('/', async (request, response) => {
@@ -89,7 +89,7 @@ featsRouter.post('/', async (request, response) => {
 
         let proofs = [];
         await Promise.all(body.proofs.map(proof => {
-            const proofId = uuid();
+            const proofId = uuidv4();
             const type = proof.split(';')[0].split('image/')[1];
             const filename = `${proofId}.${type}`;
             proofs.push(filename);
@@ -106,7 +106,7 @@ featsRouter.post('/', async (request, response) => {
         }));
 
         const feat = {
-            id: uuid(),
+            id: uuidv4(),
             approved: false,
             value: body.value,
             location: body.location,

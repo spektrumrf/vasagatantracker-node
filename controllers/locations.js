@@ -1,7 +1,7 @@
 const firestore = require('../firestore');
 const locationRouter = require('express').Router();
 const jwt = require('jsonwebtoken');
-const uuid = require('uuid/v4');
+const { v4: uuidv4 } = require('uuid');
 const isAuthorized = require('../utils/auth');
 
 locationRouter.get('/', async (request, response) => {
@@ -37,7 +37,7 @@ locationRouter.post('/', async (request, response) => {
         }
 
         const location = {
-            id: uuid(),
+            id: uuidv4(),
             name: body.name
         };
 
