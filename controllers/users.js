@@ -90,6 +90,16 @@ usersRouter.delete('/:id', async (request, response) => {
             return response.status(400).json({ error: 'Det går inte att radera användare från tidigare år!' });
         }
 
+        const userSnap = firestore.getCollection(request.query.year, 'users').doc(request.params.id);
+        const user = userSnap.data();
+        if(!user) {
+            return response.status(400).json({ error: 'Användare hittas inte!' });
+        }
+
+        if(user.username === 'ruben') {
+            return response.status(400).json({ error: 'Ruben kan inte raderas ;)' });
+        }
+
         const removedUser = await firestore.getStore().runTransaction(async t => {
             const removedUserSnap = await t.get(firestore.getCollection(request.query.year, 'users').doc(request.params.id));
             const removedUser = removedUserSnap.data();
