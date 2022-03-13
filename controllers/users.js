@@ -38,11 +38,11 @@ usersRouter.post('/', async (request, response) => {
     try {
         const body = request.body;
 
-        /*         const authorizedUser = await isAuthorized(request, response, true);
+        const authorizedUser = await isAuthorized(request, response, true);
 
         if (!authorizedUser) {
             return;
-        } */
+        }
 
         const activeYearSnap = await firestore.getProperties().doc('activeYear').get();
         const activeYear = activeYearSnap.data().activeYear.toString();
@@ -90,7 +90,7 @@ usersRouter.delete('/:id', async (request, response) => {
             return response.status(400).json({ error: 'Det går inte att radera användare från tidigare år!' });
         }
 
-        const userSnap = firestore.getCollection(request.query.year, 'users').doc(request.params.id);
+        const userSnap = firestore.getCollection(request.query.year, 'users').doc(request.params.id).get();
         const user = userSnap.data();
         if(!user) {
             return response.status(400).json({ error: 'Användare hittas inte!' });
